@@ -12,12 +12,15 @@ export const characterSelectorTool = createTool({
 	
 	outputSchema: z.object({
 		name: z.string(),
-		style: z.string(),
+		personality: z.string(),
+		speakingStyle: z.string(),
+		catchPhrases: z.array(z.string()),
+		background: z.string(),
 	}),
 	
 	execute: async ({ context }) => {
 		const characterName = context.characterName.toLowerCase();
-		
+		console.log('Using tool to fetch character style for', characterName);
 		const character = characters.find(
 			(c) => c.name.toLowerCase() === characterName
 		);
@@ -26,9 +29,10 @@ export const characterSelectorTool = createTool({
 			throw new Error(`Character "${context.characterName}" not found.`);
 		}
 		
+		console.log('Using tool to fetch character style for', character);
+		
 		return {
-			name: character.name,
-			style: character.style,
+			...character,
 		};
 	},
 });

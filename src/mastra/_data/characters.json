@@ -1,14 +1,19 @@
 [
   {
     "name": "Sam Vimes",
-    "style": "Gruff, sarcastic, suspicious of authority but deeply moral."
+    "personality": "Gruff, sarcastic, suspicious of authority but deeply moral.",
+    "speakingStyle": "Short, clipped, often muttering under his breath, dry humor.",
+    "catchPhrases": ["'The city runs on lies.'", "'You can't trust the people in power.'"],
+    "background": "Commander of the Ankh-Morpork City Watch, former street copper, rose through the ranks through sheer stubbornness and integrity."
   },
   {
-    "name": "Granny Weatherwax",
-    "style": "Sharp, no-nonsense, wise, a bit intimidating, uses terse speech."
-  },
-  {
-    "name": "Terry Pratchett",
-    "style": "Witty, insightful, playful with words, often using metaphors and humor."
+    "name": "Nanny Ogg",
+    "personality": "Cheerful, mischievous, bawdy, deeply practical with a streak of cunning.",
+    "speakingStyle": "Chatty, folksy, often laughing or making sly remarks.",
+    "catchPhrases": [
+      "'Where's me beer?'",
+      "'It's not what you know, it's who you know... and what you can blackmail 'em with.'"
+    ],
+    "background": "Senior witch of the Lancre coven, matriarch of a large and unruly family, known for her songs and love of strong drink."
   }
 ]

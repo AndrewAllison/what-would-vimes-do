@@ -2,6 +2,7 @@ import { Step, Workflow } from '@mastra/core/workflows';
 import { z } from 'zod';
 import { characterSelectorTool } from '../tools/character-selector.tool';
 import { discworldCharacterAgent } from '../agents/discworld-character.agent';
+import { formatPromptForCharacter } from '../utils/formatPromptForCharacter';
 
 // Step 1: Select Character
 export const selectCharacterStep = new Step({
@@ -12,22 +13,21 @@ export const selectCharacterStep = new Step({
 	}),
 	outputSchema: z.object({
 		name: z.string(),
-		style: z.string(),
+		personality: z.string(),
+		speakingStyle: z.string(),
+		catchPhrases: z.array(z.string()),
+		background: z.string(),
 	}),
 	execute: async ({ context, runtimeContext }) => { // <- Add runtimeContext here!
-		console.log('Executing character selector tool with characterName:', context);
-		
 		const { characterName } = context.triggerData;
 		
 		if (!characterName) {
 			throw new Error('characterName is required');
 		}
 		
-		console.log('Executing character selector tool with characterName:', characterName);
-		
 		return await characterSelectorTool.execute!({
 			context: { characterName },
-			runtimeContext, // ← Now runtimeContext is available correctly
+			runtimeContext,
 		});
 	},
 });
@@ -41,11 +41,20 @@ export const prepareInputStep = new Step({
 	}),
 	outputSchema: z.object({
 		characterName: z.string(),
-		characterStyle: z.string(),
+		personality: z.string(),
+		speakingStyle: z.string(),
+		catchPhrases: z.array(z.string()),
+		background: z.string(),
 		userQuestion: z.string(),
 	}),
 	execute: async ({ context }) => {
-		const selectResult = context.getStepResult('select-character') as { name: string; style: string };
+		const selectResult = context.getStepResult('select-character') as {
+			characterName: string;
+			speakingStyle: string
+			personality: string;
+			catchPhrases: string[];
+			background: string;
+		};
 		const { userQuestion } = context.triggerData;
 		
 		if (!selectResult || !userQuestion) {
@@ -53,8 +62,7 @@ export const prepareInputStep = new Step({
 		}
 		
 		return {
-			characterName: selectResult.name,
-			characterStyle: selectResult.style,
+			...selectResult,
 			userQuestion,
 		};
 	},
@@ -64,38 +72,36 @@ export const prepareInputStep = new Step({
 export const generateReplyStep = new Step({
 	id: 'generate-reply',
 	description: 'Generate a reply in the character\'s style.',
+	
 	inputSchema: z.object({
-		characterName: z.string(),
-		characterStyle: z.string(),
+		name: z.string(),
+		personality: z.string(),
+		speakingStyle: z.string(),
+		catchPhrases: z.array(z.string()),
+		background: z.string(),
 		userQuestion: z.string(),
 	}),
+	
 	outputSchema: z.object({
 		reply: z.string(),
 	}),
+	
 	execute: async ({ context }) => {
-		const { characterName, characterStyle, userQuestion } = context.triggerData;
+		const { name, personality, speakingStyle, catchPhrases, background, userQuestion } = context.triggerData;
+		const character = (context.steps['select-character'] as any).output;
+		const formattedPrompt = formatPromptForCharacter(
+			{ ...character },
+			userQuestion
+		);
 		
 		const response = await discworldCharacterAgent.stream([
 			{
 				role: 'user',
-				content: `
-You are ${characterName} from Terry Pratchett's Discworld novels.
-
-Your character style:
-- ${characterStyle}
-
-Stay fully in character when responding. Your tone must match ${characterName}.
-
-Here is the user's question:
-"${userQuestion}"
-
-Reply as ${characterName} would naturally. Keep it in your own voice.
-`.trim(),
+				content: formattedPrompt,
 			},
 		]);
 		
 		let reply = '';
-		
 		for await (const chunk of response.textStream) {
 			reply += chunk;
 		}

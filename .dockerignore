@@ -1,0 +1,27 @@
+# Version control
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build artifacts
+.mastra/.build
+.mastra/output
+
+# Environment variables
+.env*
+!.env.example
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db

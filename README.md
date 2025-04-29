@@ -36,6 +36,86 @@ The application uses OpenAI's GPT-4o model to generate responses that match each
    OPENAI_API_KEY=your_api_key_here
    ```
 
+## 🐳 Deployment with Docker
+
+You can deploy this application using Docker for a containerized environment.
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your system
+- OpenAI API key
+
+### Deployment Steps
+
+#### Option 1: Using the deployment script
+
+1. Make the script executable (if not already):
+   ```bash
+   chmod +x deploy.sh
+   ```
+
+2. Run the deployment script with your OpenAI API key:
+   ```bash
+   OPENAI_API_KEY=your_api_key_here ./deploy.sh
+   ```
+
+#### Option 2: Using npm/pnpm scripts
+
+1. Deploy the application:
+   ```bash
+   OPENAI_API_KEY=your_api_key_here pnpm deploy
+   ```
+
+2. Or use individual Docker commands:
+   ```bash
+   # Build the Docker image
+   pnpm docker:build
+
+   # Start the container
+   OPENAI_API_KEY=your_api_key_here pnpm docker:up
+
+   # Stop the container
+   pnpm docker:down
+   ```
+
+#### Option 3: Using Docker Compose directly
+
+1. Build and start the Docker container:
+   ```bash
+   OPENAI_API_KEY=your_api_key_here docker-compose up -d
+   ```
+
+2. Access the application:
+   - The application will be available at `http://localhost:4111`
+   - The playground interface will be available at `http://localhost:4111/playground`
+
+3. Stop the container:
+   ```bash
+   docker-compose down
+   ```
+
+### Environment Variables
+
+- `OPENAI_API_KEY`: Your OpenAI API key (required)
+- `PORT`: The port on which the server will run (default: 4111)
+- `NODE_ENV`: The environment mode (default: production for Docker deployment)
+
+A `.env.example` file is provided as a template. You can copy it to create your own environment files:
+
+```bash
+# For development
+cp .env.example .env.development
+# Edit .env.development with your actual values
+
+# For production
+cp .env.example .env
+# Edit .env with your actual values
+```
+
+### Persistent Data
+
+The application stores data in a SQLite database file (`.mastra/mastra.db`). This file is mounted as a volume in the Docker container to ensure data persistence between container restarts.
+
 ## 🔧 Usage
 
 1. Start the development server:
@@ -50,7 +130,7 @@ The application uses OpenAI's GPT-4o model to generate responses that match each
      characterName: "Sam Vimes",
      userQuestion: "What do you think about politics?"
    });
-   
+
    console.log(response.reply);
    ```
 

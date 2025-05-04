@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "mastra dev",
-    "mastra:dev": "mastra dev",
-    "mastra:build": "mastra build"
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "start": "node --import=./.mastra/output/instrumentation.mjs .mastra/output/index.mjs"
   },
   "keywords": [],
   "author": "",

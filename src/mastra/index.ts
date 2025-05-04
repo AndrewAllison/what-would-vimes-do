@@ -13,5 +13,9 @@ export const mastra = new Mastra({
 	}),
 	storage: new LibSQLStore({
 		url: 'file:../mastra.db',
-	})
+	}),
+	server: {
+		host: process.env.HOST || '0.0.0.0',
+		port: parseInt(process.env.PORT || '4111'),
+	},
 });

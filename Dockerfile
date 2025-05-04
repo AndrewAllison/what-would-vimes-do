@@ -1,27 +1,26 @@
-FROM node:20-slim
-
+# Build stage
+FROM node:lts AS build
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
-
-# Install pnpm
-RUN npm install -g pnpm
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy the rest of the application
 COPY . .
 
-# Build the application
+# Install and build
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install
 RUN pnpm build
 
-# Set environment variables
-ENV NODE_ENV=production
+# Final stage
+FROM node:lts
+WORKDIR /app
 
-# Expose the port the app runs on
+COPY --from=build /app/.mastra/output ./output
+COPY --from=build /app/package.json ./
+COPY --from=build /app/pnpm-lock.yaml ./
+COPY --from=build /app/telemetry-config.mjs ./
+COPY --from=build /app/.mastra/output/instrumentation.mjs ./
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install --prod
+
 EXPOSE 4111
-
-# Command to run the application
-CMD ["node", ".mastra/output/index.mjs"]
+CMD ["node", "--import=./instrumentation.mjs", "./output/index.mjs"]

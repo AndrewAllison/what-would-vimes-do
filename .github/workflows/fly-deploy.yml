@@ -1,6 +1,7 @@
 name: Deploy to Fly.io
 
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - main
@@ -20,7 +21,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: latest
+          version: 10.8.1gi
           run_install: false
 
       - name: Get pnpm store directory

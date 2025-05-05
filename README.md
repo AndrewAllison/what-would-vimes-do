@@ -36,11 +36,13 @@ The application uses OpenAI's GPT-4o model to generate responses that match each
    OPENAI_API_KEY=your_api_key_here
    ```
 
-## 🐳 Deployment with Docker
+## 🚀 Deployment Options
 
-You can deploy this application using Docker for a containerized environment.
+You can deploy this application using Docker for a containerized environment or Fly.io for a cloud deployment.
 
-### Prerequisites
+### 🐳 Deployment with Docker
+
+#### Prerequisites
 
 - Docker and Docker Compose installed on your system
 - OpenAI API key
@@ -94,11 +96,66 @@ You can deploy this application using Docker for a containerized environment.
    docker-compose down
    ```
 
+### ✈️ Deployment with Fly.io
+
+You can deploy this application to Fly.io for a cloud deployment with automatic scaling.
+
+#### Prerequisites
+
+- A Fly.io account
+- Fly CLI installed (optional for manual deployment)
+- OpenAI API key
+
+#### Manual Deployment
+
+1. Install the Fly CLI:
+   ```bash
+   curl -L https://fly.io/install.sh | sh
+   ```
+
+2. Login to Fly.io:
+   ```bash
+   fly auth login
+   ```
+
+3. Deploy the application:
+   ```bash
+   OPENAI_API_KEY=your_api_key_here fly deploy
+   ```
+
+#### Automated Deployment with GitHub Actions
+
+This repository includes a GitHub Actions workflow that automatically deploys the application to Fly.io when changes are pushed to the main branch.
+
+To set up automated deployment:
+
+1. Generate a Fly.io API token:
+   ```bash
+   fly auth token
+   ```
+
+2. Add the token to your GitHub repository secrets:
+   - Go to your GitHub repository
+   - Click on "Settings" > "Secrets and variables" > "Actions"
+   - Click "New repository secret"
+   - Name: `FLY_API_TOKEN`
+   - Value: Your Fly.io API token from step 1
+   - Click "Add secret"
+
+3. Add your OpenAI API key to GitHub repository secrets:
+   - Follow the same steps as above
+   - Name: `OPENAI_API_KEY`
+   - Value: Your OpenAI API key
+   - Click "Add secret"
+
+4. Push changes to the main branch to trigger the deployment.
+
 ### Environment Variables
 
 - `OPENAI_API_KEY`: Your OpenAI API key (required)
 - `PORT`: The port on which the server will run (default: 4111)
 - `NODE_ENV`: The environment mode (default: production for Docker deployment)
+- `FLY_API_TOKEN`: Your Fly.io API token (required for GitHub Actions deployment)
 
 A `.env.example` file is provided as a template. You can copy it to create your own environment files:
 

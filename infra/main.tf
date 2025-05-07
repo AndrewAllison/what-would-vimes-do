@@ -13,3 +13,15 @@ module "ecr" {
   project            = var.project
   owner              = var.owner
 }
+
+module "ecs_cluster" {
+  source      = "./modules/ecs-cluster"
+  project     = var.project
+  environment = var.environment
+}
+
+module "iam" {
+  source      = "./modules/iam"
+  project     = var.project
+  environment = var.environment
+}

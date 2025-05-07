@@ -3,3 +3,13 @@ variable "execution_role_name" {
   type        = string
   default     = "ecsTaskExecutionRole"
 }
+
+variable "project" {
+  description = "Project name or identifier"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (e.g., dev, staging, prod)"
+  type        = string
+}

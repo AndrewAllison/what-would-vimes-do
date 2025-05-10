@@ -36,11 +36,13 @@ The application uses OpenAI's GPT-4o model to generate responses that match each
    OPENAI_API_KEY=your_api_key_here
    ```
 
-## 🐳 Deployment with Docker
+## 🚀 Deployment Options
 
-You can deploy this application using Docker for a containerized environment.
+You can deploy this application using Docker for a containerized environment. A migration to AWS is currently in progress.
 
-### Prerequisites
+### 🐳 Deployment with Docker
+
+#### Prerequisites
 
 - Docker and Docker Compose installed on your system
 - OpenAI API key
@@ -93,6 +95,46 @@ You can deploy this application using Docker for a containerized environment.
    ```bash
    docker-compose down
    ```
+
+### 🔄 AWS Deployment
+
+The application can be deployed to AWS using Terraform and the provided infrastructure code.
+
+#### Prerequisites
+
+- AWS CLI installed and configured with the `vimes-user` profile
+- Terraform installed
+- Docker installed
+
+#### Deployment Steps
+
+1. Initialize Terraform:
+   ```bash
+   cd infra
+   terraform init
+   ```
+
+2. Apply the Terraform configuration:
+   ```bash
+   terraform apply
+   ```
+
+3. Push the Docker image to ECR using the provided script:
+   ```bash
+   ./push_to_ecr.sh
+   ```
+
+   This script will:
+   - Assume the ECR push role created by Terraform
+   - Log in to ECR
+   - Build and tag the Docker image
+   - Push the Docker image to ECR
+
+4. Once the image is pushed, Terraform will be able to complete the ECS service deployment.
+
+#### Troubleshooting
+
+If you encounter timeout issues during Terraform apply, it might be because the Docker image hasn't been pushed to ECR yet. Run the `push_to_ecr.sh` script and then try applying Terraform again.
 
 ### Environment Variables
 
